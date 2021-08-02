@@ -4,12 +4,12 @@
   "version": "${version}",
   "name": "MCDict Test Mod",
   "description": "A mod to make sure MCDict works properly without any issues.",
-  "authors": ["joaoh1"],
+  "authors": ["EnnuiL"],
   "license": "MIT",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "io.github.joaoh1.mcdicttest.MCDictTestMod"
+      "io.github.ennuil.mcdicttest.MCDictTestMod"
     ]
   },
   "depends": {

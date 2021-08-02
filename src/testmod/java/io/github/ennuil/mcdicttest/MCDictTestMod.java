@@ -1,4 +1,4 @@
-package io.github.joaoh1.mcdicttest;
+package io.github.ennuil.mcdicttest;
 
 import io.github.cottonmc.mcdict.api.Dict;
 import io.github.cottonmc.mcdict.api.DictManager;

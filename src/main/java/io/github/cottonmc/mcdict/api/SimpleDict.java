@@ -121,16 +121,16 @@ public class SimpleDict<T, V> implements Dict<T, V> {
 				throw new JsonParseException("Dict value for entry " + key + " could not be parsed into type " + type.getName());
 			}
 			if (key.indexOf('#') == 0) {
+				/*
 				Map<Identifier, V> pendingTagsMap = new HashMap<>();
 				pendingTagsMap.put(new Identifier(key.substring(1)), value);
 				pendingTags.put(pendingTagsMap, override);
-				/*
+				*/
 				Tag<T> tag = group.get().getTag(new Identifier(key.substring(1)));
-				if (tag == null) throw new SyntaxError("Dict references tag " + key + " that does not exist");
+				if (tag == null) throw new JsonParseException("Dict references tag " + key + " that does not exist");
 				for (T t : tag.values()) {
 					if (!vals.containsKey(t) || override) vals.put(t, value);
 				}
-				*/
 			} else {
 				Optional<T> entry = registry.getOrEmpty(new Identifier(key));
 				if (!entry.isPresent())

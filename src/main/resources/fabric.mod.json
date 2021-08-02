@@ -4,12 +4,12 @@
   "version": "${version}",
   "name": "MCDict",
   "icon": "assets/mcdict/icon.png",
-  "description": "Adds dicts, which are similar to tags but stores key/value pairs instead. Unofficially ported to 1.16+ for usage in Crooked Crooks by joaoh1",
-  "authors": ["B0undaryBreaker", "joaoh1"],
+  "description": "Adds dicts, which are similar to tags but stores key/value pairs instead. Unofficially ported to 1.16+ for usage in Crooked Crooks by EnnuiL",
+  "authors": ["B0undaryBreaker", "EnnuiL"],
   "license": "MIT",
   "contact": {
-    "issues": "https://github.com/joaoh1/MCDict/issues",
-    "sources": "https://github.com/joaoh1/MCDict"
+    "issues": "https://github.com/EnnuiL/MCDict/issues",
+    "sources": "https://github.com/EnnuiL/MCDict"
   },
   "environment": "*",
   "entrypoints": {

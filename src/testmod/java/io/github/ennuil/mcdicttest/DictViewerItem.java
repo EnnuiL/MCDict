@@ -1,4 +1,4 @@
-package io.github.joaoh1.mcdicttest;
+package io.github.ennuil.mcdicttest;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
