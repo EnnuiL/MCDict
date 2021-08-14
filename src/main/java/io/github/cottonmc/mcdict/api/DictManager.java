@@ -1,7 +1,6 @@
 package io.github.cottonmc.mcdict.api;
 
 import io.github.cottonmc.mcdict.MCDict;
-import net.fabricmc.fabric.mixin.tag.extension.AccessorFluidTags;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
@@ -33,7 +32,7 @@ public class DictManager {
 	private DictManager() {
 		innerRegisterDictType("blocks", Registry.BLOCK, BlockTags::getTagGroup);
 		innerRegisterDictType("items", Registry.ITEM, ItemTags::getTagGroup);
-		innerRegisterDictType("fluids", Registry.FLUID, AccessorFluidTags.getRequiredTags()::getGroup);
+		innerRegisterDictType("fluids", Registry.FLUID, FluidTags::getTagGroup);
 		innerRegisterDictType("entity_types", Registry.ENTITY_TYPE, EntityTypeTags::getTagGroup);
 	}
 
