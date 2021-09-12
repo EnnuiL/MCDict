@@ -10,6 +10,8 @@ import net.minecraft.util.registry.Registry;
 import java.util.*;
 import java.util.function.Supplier;
 
+import io.github.cottonmc.mcdict.MCDict;
+
 public class IntDict<T> extends SimpleDict<T, Integer> {
 	private final Object2IntMap<T> values;
 
@@ -20,24 +22,26 @@ public class IntDict<T> extends SimpleDict<T, Integer> {
 	
 	@Override
 	protected void loadPendingTags() {
-		if (!this.pendingTags.isEmpty()) {
-			List<Map<Identifier, Integer>> list = new ArrayList<>();
-			
-			this.pendingTags.forEach((tags, override) -> {
-				if (tags != null) {
+		if (hasPendingTags && !this.pendingTags.isEmpty()) {
+			if (!group.get().getTags().isEmpty()) {
+				Map<Map<Identifier, Integer>, Boolean> pending = Map.copyOf(this.pendingTags);
+				
+				pending.forEach((tags, override) -> {
 					tags.forEach((tagId, value) -> {
 						Tag<T> tag = group.get().getTag(tagId);
 						if (tag != null) {
 							for (T t : tag.values()) {
 								if (!values.containsKey(t) || override) values.put(t, value.intValue());
 							}
-							list.add(tags);
+						} else {
+							MCDict.logger.error("Dict references tag " + tagId.toString() + " that does not exist");
 						}
 					});
-				}
-			});
-			
-			list.forEach(this.pendingTags::remove);
+					this.pendingTags.remove(tags);
+				});
+
+				this.hasPendingTags = false;
+			}
 		}
 	}
 

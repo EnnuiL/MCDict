@@ -2,6 +2,8 @@ package io.github.cottonmc.mcdict;
 
 import io.github.cottonmc.mcdict.api.Dict;
 import io.github.cottonmc.mcdict.api.DictManager;
+import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
+import net.fabricmc.fabric.api.resource.SimpleResourceReloadListener;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
@@ -23,10 +25,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
-import org.quiltmc.qsl.resource.loader.api.reloader.ResourceReloaderKeys;
-import org.quiltmc.qsl.resource.loader.api.reloader.SimpleResourceReloader;
-
-public class PackDictLoader implements SimpleResourceReloader<Map<String, Map<Identifier, List<JsonObject>>>> {
+public class PackDictLoader implements SimpleResourceReloadListener<Map<String, Map<Identifier, List<JsonObject>>>> {
 	private static final String DATA_TYPE = "dicts/";
 	private static final String EXTENSION = ".json";
 
@@ -93,12 +92,12 @@ public class PackDictLoader implements SimpleResourceReloader<Map<String, Map<Id
 	}
 
 	@Override
-	public Identifier getQuiltId() {
+	public Identifier getFabricId() {
 		return new Identifier(MCDict.MODID, "dict_loader");
 	}
 
 	@Override
-	public Collection<Identifier> getQuiltDependencies() {
-		return Collections.singletonList(ResourceReloaderKeys.Server.TAGS);
+	public Collection<Identifier> getFabricDependencies() {
+		return Collections.singletonList(ResourceReloadListenerKeys.TAGS);
 	}
 }
