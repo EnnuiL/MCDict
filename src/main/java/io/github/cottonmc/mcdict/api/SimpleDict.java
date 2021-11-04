@@ -8,6 +8,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 
+import net.fabricmc.fabric.api.tag.TagFactory;
+import net.fabricmc.fabric.impl.tag.extension.TagDelegate;
 import net.minecraft.tag.Tag;
 import net.minecraft.tag.TagGroup;
 import net.minecraft.util.Identifier;
@@ -75,7 +77,9 @@ public class SimpleDict<T, V> implements Dict<T, V> {
 	@Override
 	public Tag<T> toTag() {
 		//Identifier newId = new Identifier(id.getNamespace(), "dict/" + id.getPath());
-		return Tag.of(values().keySet());
+
+		return new TagDelegate<T>(new Identifier(id.getNamespace(), "dict/" + id.getPath()), this.group);
+		//return Tag.of(values().keySet());
 	}
 
 	//TODO: libcd condition support?
@@ -87,22 +91,34 @@ public class SimpleDict<T, V> implements Dict<T, V> {
 			String key = jsonEntry.getKey();
 			Gson gson = new GsonBuilder().create();
 			V value = gson.fromJson(jsonEntry.getValue().toString(), type);
+			boolean isOptional = false;
 			if (value == null) {
 				throw new JsonParseException("Dict value for entry " + key + " could not be parsed into type " + type.getName());
 			}
+			if (key.indexOf('?') == 0) {
+				key = key.substring(1);
+				isOptional = true;
+			}
 			if (key.indexOf('#') == 0) {
 				Tag<T> tag = group.get().getTag(new Identifier(key.substring(1)));
-				if (tag == null) throw new JsonParseException("Dict references tag " + key + " that does not exist");
+				if (tag == null) {
+					if (!isOptional) throw new JsonParseException("Dict references tag " + key + " that does not exist");
+					else continue;
+				}
 				for (T t : tag.values()) {
 					if (!vals.containsKey(t) || override) vals.put(t, value);
 				}
 			} else {
 				Optional<T> entry = registry.getOrEmpty(new Identifier(key));
-				if (!entry.isPresent())
-					throw new JsonParseException("Dict references registered object " + key + " that does not exist");
+				if (entry.isEmpty()) {
+					if (!isOptional) throw new JsonParseException("Dict references registered object " + key + " that does not exist");
+					else continue;
+				}
 				if (!vals.containsKey(entry.get()) || override) vals.put(entry.get(), value);
 			}
 		}
+		TagFactory.of(group).create(new Identifier(""));
+		
 	}
 
 	@Override

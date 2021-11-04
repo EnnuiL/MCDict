@@ -5,6 +5,8 @@
     "#minecraft:leaves": 10,
     "minecraft:grass_block": 5,
     "minecraft:dirt": 1,
-    "#thisisnotarealtag": 100
+    "?this_isnt_a_real_block": 15,
+    "?#and_this_is_not_a_real_tag": 20,
+    "#this_isnt_optional": 100
   }
 }
