@@ -2,6 +2,7 @@ package io.github.cottonmc.mcdict;
 
 import io.github.cottonmc.mcdict.api.DictInitializer;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resource.ResourceType;
@@ -24,5 +25,13 @@ public class MCDict implements ModInitializer {
 			entrypoints.forEach(DictInitializer::registerDicts);
 			StaticDictLoader.load();
 		}
+
+		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+			PackDictLoader.applyDicts();
+		});
+
+		ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, manager, success) -> {
+			PackDictLoader.applyDicts();
+		});
 	}
 }

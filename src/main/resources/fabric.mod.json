@@ -5,7 +5,7 @@
   "name": "MCDict",
   "icon": "assets/mcdict/icon.png",
   "description": "Adds dicts, which are similar to tags but stores key/value pairs instead. Unofficially ported to 1.16+ for usage in Crooked Crooks by EnnuiL",
-  "authors": ["B0undaryBreaker", "EnnuiL"],
+  "authors": ["LemmaEOF", "EnnuiL"],
   "license": "MIT",
   "contact": {
     "issues": "https://github.com/EnnuiL/MCDict/issues",

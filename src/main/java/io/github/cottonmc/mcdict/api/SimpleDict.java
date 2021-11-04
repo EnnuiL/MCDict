@@ -8,7 +8,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 
-import io.github.cottonmc.mcdict.MCDict;
 import net.minecraft.tag.Tag;
 import net.minecraft.tag.TagGroup;
 import net.minecraft.util.Identifier;
@@ -21,8 +20,6 @@ public class SimpleDict<T, V> implements Dict<T, V> {
 	private final Identifier id;
 	private final Class<V> type;
 	private final Map<T, V> values;
-	protected final Map<Map<Identifier, V>, Boolean> pendingTags;
-	protected boolean hasPendingTags;
 	protected Registry<T> registry;
 	protected Supplier<TagGroup<T>> group;
 
@@ -32,44 +29,15 @@ public class SimpleDict<T, V> implements Dict<T, V> {
 		this.registry = registry;
 		this.group = group;
 		this.values = new HashMap<>();
-		this.pendingTags = new HashMap<>();
-		this.hasPendingTags = false;
-	}
-
-	//This is a workaround for tags failing to load when a dict is loaded
-	protected void loadPendingTags() {
-		if (hasPendingTags && !this.pendingTags.isEmpty()) {
-			if (!group.get().getTags().isEmpty()) {
-				Map<Map<Identifier, V>, Boolean> pending = Map.copyOf(this.pendingTags);
-				
-				pending.forEach((tags, override) -> {
-					tags.forEach((tagId, value) -> {
-						Tag<T> tag = group.get().getTag(tagId);
-						if (tag != null) {
-							for (T t : tag.values()) {
-								if (!values.containsKey(t) || override) values.put(t, value);
-							}
-						} else {
-							MCDict.logger.error("Dict references tag " + tagId.toString() + " that does not exist");
-						}
-					});
-					this.pendingTags.remove(tags);
-				});
-
-				this.hasPendingTags = false;
-			}
-		}
 	}
 
 	@Override
 	public void clear() {
-		this.pendingTags.clear();
 		values().clear();
 	}
 
 	@Override
 	public boolean contains(T entry) {
-		this.loadPendingTags();
 		return values.containsKey(entry);
 	}
 
@@ -80,19 +48,16 @@ public class SimpleDict<T, V> implements Dict<T, V> {
 
 	@Override
 	public Collection<T> keys() {
-		this.loadPendingTags();
 		return values.keySet();
 	}
 
 	@Override
 	public Map<T, V> values() {
-		this.loadPendingTags();
 		return values;
 	}
 
 	@Override
 	public V get(T entry) {
-		this.loadPendingTags();
 		return values.get(entry);
 	}
 
@@ -126,17 +91,11 @@ public class SimpleDict<T, V> implements Dict<T, V> {
 				throw new JsonParseException("Dict value for entry " + key + " could not be parsed into type " + type.getName());
 			}
 			if (key.indexOf('#') == 0) {
-				Map<Identifier, V> pendingTagsMap = new HashMap<>();
-				pendingTagsMap.put(new Identifier(key.substring(1)), value);
-				pendingTags.put(pendingTagsMap, override);
-				hasPendingTags = true;
-				/*
 				Tag<T> tag = group.get().getTag(new Identifier(key.substring(1)));
 				if (tag == null) throw new JsonParseException("Dict references tag " + key + " that does not exist");
 				for (T t : tag.values()) {
 					if (!vals.containsKey(t) || override) vals.put(t, value);
 				}
-				*/
 			} else {
 				Optional<T> entry = registry.getOrEmpty(new Identifier(key));
 				if (!entry.isPresent())

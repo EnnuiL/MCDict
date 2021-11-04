@@ -29,6 +29,8 @@ public class PackDictLoader implements SimpleResourceReloadListener<Map<String, 
 	private static final String DATA_TYPE = "dicts/";
 	private static final String EXTENSION = ".json";
 
+	private static Map<String, Map<Identifier, List<JsonObject>>> pendingDicts;
+
 	@Override
 	public CompletableFuture<Map<String, Map<Identifier, List<JsonObject>>>> load(ResourceManager manager, Profiler profiler, Executor executor) {
 		return CompletableFuture.supplyAsync(() -> {
@@ -69,10 +71,16 @@ public class PackDictLoader implements SimpleResourceReloadListener<Map<String, 
 	@Override
 	public CompletableFuture<Void> apply(Map<String, Map<Identifier, List<JsonObject>>> dicts, ResourceManager manager, Profiler profiler, Executor executor) {
 		return CompletableFuture.runAsync(() -> {
-			for (String type : dicts.keySet()) {
+			pendingDicts = dicts;
+		});
+	}
+
+	public static CompletableFuture<Void> applyDicts() {
+		return CompletableFuture.runAsync(() -> {
+			for (String type : pendingDicts.keySet()) {
 				Map<Identifier, Dict<?, ?>> registered = DictManager.DATA_PACK.dicts.get(type);
 				registered.forEach((id, dict) -> dict.clear());
-				Map<Identifier, List<JsonObject>> typeDicts = dicts.get(type);
+				Map<Identifier, List<JsonObject>> typeDicts = pendingDicts.get(type);
 				for (Identifier id : typeDicts.keySet()) {
 					Dict<?, ?> dict = registered.get(id);
 					List<JsonObject> jsons = typeDicts.get(id);
@@ -100,4 +108,5 @@ public class PackDictLoader implements SimpleResourceReloadListener<Map<String, 
 	public Collection<Identifier> getFabricDependencies() {
 		return Collections.singletonList(ResourceReloadListenerKeys.TAGS);
 	}
+	
 }
