@@ -4,7 +4,9 @@
 
 ## Port Information
 
-This is an unofficial port of MCDict to Minecraft 1.17.1, made originally for 1.15.2 by B0undaryBreaker. This fork is meant to be exclusively used by Crooked Crooks, but you may use it on your mods.
+This is an unofficial port of MCDict to Minecraft 1.17.1, made originally for 1.15.2 by LemmaEOF under The Cotton Project. This fork is meant to be exclusively used by Crooked Crooks, but you may use it on your mods.
+
+This mod has been superseded by [Quilt Standard Libraries](https://modrinth.com/mod/qsl)'s Registry Entry Attachments API, which allows for the same functionality but with it being properly maintained and with more features. With that, this repository has been archived.
 
 ## Original Description
 
